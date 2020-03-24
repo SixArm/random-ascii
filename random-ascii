@@ -1,0 +1,88 @@
+#!/bin/bash
+set -euf -o pipefail
+
+##
+# Generate a secure random ASCII string.
+#
+# Usage:
+#
+#     random-ascii [characters] [n]
+#
+# Options:
+#
+#   * `characters` is a `tr` compatible string; default is '[:graph:]'.
+#
+#   * `n` is the number of characters; default is 1.
+#
+# Examples:
+#
+#     $ random-ascii
+#     x
+#
+#     $ random-ascii ABC 8
+#     ABACABAA
+#
+#     $ random-ascii A-Z 8
+#     ZMFKBTWD
+#
+#     $ random-ascii A-Za-z0-9 6
+#     Sx0mkWM4
+#
+#     $ random-ascii '[:alpha:]' 8
+#     oEegVNEC
+#
+#     $ random-ascii '[:lower:][:digit:]' 8
+#     hbp4z9ki
+#
+#
+# ## Character classes
+#
+#   * [:alpha:] — ASCII alphanumeric i.e. letters
+#
+#   * [:alnum:] — ASCII alphanumeric i.e. letters and digits
+#
+#   * [:blank:] — ASCII widthful whitespace: space and tab
+#
+#   * [:cntrl:] — ACSCII control characters 0 to 32
+#
+#   * [:digit:] — ASCII digits, same as \d
+#
+#   * [:graph:] — ASCII graphic characters i.e. that use ink
+#
+#   * [:lower:] — ASCII lower-case letters
+#
+#   * [:print:] — ASCII ink-users plus widthful whitespace
+#
+#   * [:space:] — ASCII whitespace, same as \s
+#
+#   * [:upper:] — ASCII upper-case letters
+#
+#   * [:word:] — ASCII letters and underscore, same as \w
+#
+#   * [:xdigit:] — ASCII hex digits
+#
+#   * [:ascii:] — ASCII characters i.e. all of them
+#
+#
+# ## Implementation
+#
+# This implementation uses `/dev/urandom`
+# and `tr` to select matching characters.
+#
+# Depending on your own systems and security needs,
+# you may want to adjust this script by changing the
+# system command `/dev/urandom` to `/dev/urandom`.
+# This change will make the script non-blocking.
+#
+#
+# ## Tracking
+#
+# Version: 2.0.0
+# Updated: 2020-03-24
+# License: GPL
+# Contact: Joel Parker Henderson (joel@joelparkerhenderson.com)
+##
+
+characters=${1:-'[:graph:]'}
+len=${2-1}
+printf "%s\n" $(LC_ALL=C < /dev/urandom tr -dc "$characters" | head -c"$len")
